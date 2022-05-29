@@ -55,3 +55,42 @@
     curl donggyu.com:82/public/kg.jpeg
     curl donggyu.com:82/public/profile.txt
 ```
+
+## Nginx Load Balance
+- Scale up vs Scale out
+- Scale out must needs Load Balancing
+
+### nginx LoadBalance Policy
+- https://intrepidgeeks.com/tutorial/nginx-server-load-balancing-strategy-6-kinds
+- 기본은 roudn robin
+
+```
+    upstream backend {
+    least_conn; 
+    server localhost:8001; 
+    server localhost:8002; 
+    server localhost:8003;
+}
+
+server {
+    listen 80
+
+    location / {
+        # setting client host
+        proxy_set_header Host $host
+        
+        # use upstream server
+        proxy_set_header Connection ""; 
+
+        # proxy_pass
+        proxy_pass http://backend-dongguy
+
+    }
+}
+```
+
+- 80번 요청이 들어오면 8001 ~ 8003 3개의 서버로 로드밸런싱이 진행된다.
+- 해당 로드밸런싱은 upstream server에서 기재된 알고리즘에 의해 진행된다.
+
+## Example LoadBalance Nodejs Server
+- ... Todo
